@@ -1,5 +1,6 @@
 package org.example.domain;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Pessoa {
@@ -8,10 +9,10 @@ public class Pessoa {
 
     private int idade;
 
-    private Date dataNascimento;
+    private LocalDate dataNascimento;
 
 
-    public Pessoa(String nome, int idade, Date dataNascimento) {
+    public Pessoa(String nome, int idade, LocalDate dataNascimento) {
         this.nome = nome;
         this.idade = idade;
         this.dataNascimento = dataNascimento;
@@ -25,7 +26,7 @@ public class Pessoa {
         return idade;
     }
 
-    public Date getDataNascimento() {
+    public LocalDate getDataNascimento() {
         return dataNascimento;
     }
 }

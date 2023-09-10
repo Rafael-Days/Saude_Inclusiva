@@ -1,19 +1,29 @@
 package org.example;
 
-// Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
-// then press Enter. You can now see whitespace characters in your code.
+import org.example.domain.Consulta;
+import org.example.domain.Medico;
+import org.example.domain.Paciente;
+
+import java.time.LocalDate;
+import java.util.Date;
+
 public class Main {
     public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
 
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
-        }
+        //MARCAR CONSULTA
+
+        Medico medico = new Medico("Roberto", 40, LocalDate.of(1983, 5, 15), 11.00);
+        Paciente paciente = new Paciente("Antonio", 30, LocalDate.of(1993, 3, 18), 222.00);
+
+        Consulta consulta = new Consulta(LocalDate.of(2023, 12, 1), 4444.00, medico, paciente);
+
+        Double consultaId = consulta.getIdConsulta();
+        Double medicoId = consulta.getMedico().getIdMedico();
+        Double pacienteId = consulta.getPaciente().getIdPaciente();
+
+        System.out.println("ID da Consulta: " + consultaId);
+        System.out.println("ID do Médico: " + medicoId);
+        System.out.println("ID do Paciente: " + pacienteId);
     }
 }

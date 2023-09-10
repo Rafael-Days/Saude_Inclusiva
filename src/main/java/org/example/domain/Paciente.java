@@ -1,17 +1,18 @@
 package org.example.domain;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Paciente extends Pessoa{
 
-    private Double idCliente;
+    private Double idPaciente;
 
-    public Paciente(String nome, int idade, Date dataNascimento, Double idCliente){
+    public Paciente(String nome, int idade, LocalDate dataNascimento, Double idPaciente){
         super(nome, idade, dataNascimento);
-        this.idCliente = idCliente;
+        this.idPaciente = idPaciente;
     }
 
-    public Double getIdCliente() {
-        return idCliente;
+    public Double getIdPaciente() {
+        return idPaciente;
     }
 }
