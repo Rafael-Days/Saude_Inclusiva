@@ -1,0 +1,164 @@
+CREATE DATABASE IF NOT EXISTS DF4;
+USE DF4;
+
+CREATE TABLE carteirinha (
+    numCarteirinha NUMERIC(13) NOT NULL,
+    dataInclusao DATE NOT NULL,
+    dataNasc DATE NOT NULL,
+    plano VARCHAR(50) NOT NULL, 
+    nomeContratante VARCHAR(50) NOT NULL,
+    PRIMARY KEY (numCarteirinha)
+);
+
+CREATE TABLE funcionario (
+    idFuncionario NUMERIC NOT NULL,
+    nomeFuncionario VARCHAR(50) NOT NULL, 
+    funcUBS VARCHAR(50) NOT NULL, 
+    contatoFuncionario NUMERIC(9) NOT NULL,
+    nivelAcesso VARCHAR(50) NOT NULL, 
+    PRIMARY KEY (idFuncionario)
+);
+
+CREATE TABLE paciente (
+    idPaciente NUMERIC NOT NULL,
+    numCarteirinhaPFK NUMERIC(13) NOT NULL,
+    nomePaciente VARCHAR(50) NOT NULL, 
+    contatoPaciente NUMERIC(9) NOT NULL,
+    PRIMARY KEY (idPaciente, numCarteirinhaPFK),
+    FOREIGN KEY (numCarteirinhaPFK) REFERENCES carteirinha (numCarteirinha)
+);
+
+CREATE TABLE item (
+    idItem NUMERIC NOT NULL,
+    nomeItem VARCHAR(50) NOT NULL, 
+    descProduto VARCHAR(100),
+    categoria VARCHAR(50) NOT NULL, 
+    qtdeDisponivelItem NUMERIC NOT NULL,
+    qtdeTotallItem NUMERIC NOT NULL,
+    dataAquisicao DATE NOT NULL,
+    unidDeMedida VARCHAR(50) NOT NULL, 
+    fornecedorItem VARCHAR(50) NOT NULL,
+    condItem VARCHAR(50) NOT NULL,
+    validade DATE NOT NULL,
+    locEstoque VARCHAR(50) NOT NULL, 
+    PRIMARY KEY (idItem)
+);
+
+CREATE TABLE emprestimo (
+    idItemEmprestPFK NUMERIC NOT NULL,
+    idEmprestimo NUMERIC NOT NULL,
+    dataEmprest DATE NOT NULL,
+    dataPrevDev DATE NOT NULL,
+    dataDevol DATE NOT NULL,
+    responsavEmprest VARCHAR(50) NOT NULL,
+    nomeProduto VARCHAR(50) NOT NULL, 
+    estado VARCHAR(50) NOT NULL, 
+    PRIMARY KEY (idItemEmprestPFK, idEmprestimo),
+    FOREIGN KEY (idItemEmprestPFK) REFERENCES item (idItem),
+    FOREIGN KEY (idEmprestimo) REFERENCES paciente (idPaciente)
+);
+
+CREATE TABLE histMovimentacao (
+    idMovimentacao VARCHAR(50) NOT NULL,
+    idItemMovimentPFK NUMERIC NOT NULL,
+    idFuncionarioPFK NUMERIC NOT NULL,
+    tipoMovimentacao VARCHAR(50) NOT NULL, 
+    dataMovimentacao DATE NOT NULL,
+    qtdeMovimentada NUMERIC(60) NOT NULL,
+    PRIMARY KEY (idMovimentacao, idItemMovimentPFK, idFuncionarioPFK),
+    FOREIGN KEY (idItemMovimentPFK) REFERENCES item (idItem),
+    FOREIGN KEY (idFuncionarioPFK) REFERENCES funcionario (idFuncionario)
+);
+
+
+ALTER TABLE paciente ADD CONSTRAINT carteirinha_paciente_fk
+FOREIGN KEY (numCarteirinhaPFK)
+REFERENCES carteirinha (numCarteirinha)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE histMovimentacao ADD CONSTRAINT funcionario_histmovimentacao_fk
+FOREIGN KEY (idFuncionarioPFK)
+REFERENCES funcionario (idFuncionario)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE histMovimentacao ADD CONSTRAINT item_histmovimentacao_fk
+FOREIGN KEY (idItemMovimentPFK)
+REFERENCES item (idItem)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE emprestimo ADD CONSTRAINT item_emprestimo_fk
+FOREIGN KEY (idItemEmprestPFK)
+REFERENCES item (idItem)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+-- ------------------------ INSERTS DAS TABLES ------------------------ --
+
+INSERT INTO carteirinha (numCarteirinha, dataInclusao, dataNasc, plano, nomeContratante)
+VALUES (1234567890123, '2023-09-04', '1990-01-01', 'Plano A', 'João Silva'),
+       (9876543210987, '2023-09-05', '1985-05-15', 'Plano B', 'Maria Santos');
+
+INSERT INTO funcionario (idFuncionario, nomeFuncionario, funcUBS, contatoFuncionario, nivelAcesso)
+VALUES (1, 'Ana Pereira', 'UBS Central', 987654321, 'Admin'),
+       (2, 'Carlos Lima', 'UBS Norte', 123456789, 'Usuário');
+       
+INSERT INTO paciente (idPaciente, numCarteirinhaPFK, nomePaciente, contatoPaciente)
+VALUES (101, 1234567890123, 'José Santos', 987654321),
+       (102, 9876543210987, 'Mariana Oliveira', 987654321);
+       
+INSERT INTO item (idItem, nomeItem, descProduto, categoria, qtdeDisponivelItem, qtdeTotallItem, dataAquisicao, unidDeMedida, fornecedorItem, condItem, validade, locEstoque)
+VALUES (201, 'Medicamento A', 'Anti-inflamatório', 'Medicamento', 100, 200, '2023-08-01', 'Unidade', 'Fornecedor X', 'Armazenado', '2023-12-31', 'Estoque 1'),
+       (202, 'Material de Curativo', 'Pacote com curativos', 'Material', 50, 100, '2023-07-15', 'Pacote', 'Fornecedor Y', 'Armazenado', '2024-06-30', 'Estoque 2');
+
+-- -------- insert table emprestimo com erro  -- ----------------------------------------------------------------------------------------
+
+-- Inserir um paciente na tabela "paciente"
+INSERT INTO paciente (idPaciente, numCarteirinhaPFK, nomePaciente, contatoPaciente)
+VALUES (1, 1234567890123, 'João Silva', 987654321);
+
+-- Em seguida, insira um registro correspondente na tabela "emprestimo"
+INSERT INTO emprestimo (idItemEmprestPFK, idEmprestimo, dataEmprest, dataPrevDev, dataDevol, responsavEmprest, nomeProduto, estado)
+VALUES (201, 1, '2023-09-10', '2023-09-17', '2023-09-16', 'Maria', 'Medicamento A', 'Concluído'),
+       (202, 2, '2023-09-04', '2023-11-17', '2023-09-16', 'Mario', 'Muleta', 'Concluído');
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+INSERT INTO histMovimentacao (idMovimentacao, idItemMovimentPFK, idFuncionarioPFK, tipoMovimentacao, dataMovimentacao, qtdeMovimentada)
+VALUES ('MOV1', 201, 1, 'Entrada', '2023-09-05', 50),
+       ('MOV2', 202, 2, 'Saída', '2023-09-08', 25);
+       
+-- ------------------------ CONSULTAS ------------------------ --
+-- Selecionar todos os pacientes com seus detalhes de carteirinha
+SELECT p.nomePaciente, p.contatoPaciente, c.dataInclusao, c.plano
+FROM paciente p
+INNER JOIN carteirinha c ON p.numCarteirinhaPFK = c.numCarteirinha;
+
+-- Listar todos os funcionários e seus níveis de acesso
+SELECT f.nomeFuncionario, f.funcUBS, f.nivelAcesso
+FROM funcionario f;
+
+-- Recuperar informações sobre empréstimos pendentes, 
+-- incluindo detalhes do item emprestado e do paciente
+SELECT e.idEmprestimo, e.dataEmprest, e.dataPrevDev, e.dataDevol, e.estado,
+       i.nomeItem, p.nomePaciente
+FROM emprestimo e
+INNER JOIN item i ON e.idItemEmprestPFK = i.idItem
+INNER JOIN paciente p ON e.idEmprestimo = p.idPaciente;
+
+-- Calcular a quantidade total de itens em estoque por categoria
+SELECT categoria, SUM(qtdeDisponivelItem) AS totalItensEmEstoque
+FROM item
+GROUP BY categoria;
+
+-- Encontrar o funcionário que mais realizou movimentações e o
+-- tipo de movimentação mais comum
+SELECT f.nomeFuncionario, h.tipoMovimentacao, COUNT(*) AS totalMovimentacoes
+FROM histMovimentacao h
+INNER JOIN funcionario f ON h.idFuncionarioPFK = f.idFuncionario
+GROUP BY f.nomeFuncionario, h.tipoMovimentacao
+ORDER BY totalMovimentacoes DESC
+LIMIT 1;
