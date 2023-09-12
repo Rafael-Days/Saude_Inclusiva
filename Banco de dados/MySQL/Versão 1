@@ -1,0 +1,100 @@
+CREATE DATABASE IF NOT EXISTS DF41;
+USE DF41;
+
+CREATE TABLE carteirinha (
+    numCarteirinha NUMERIC(13) NOT NULL,
+    dataInclusao DATE NOT NULL,
+    dataNasc DATE NOT NULL,Corrigido
+    plano VARCHAR(50) NOT NULL, 
+    nomeContratante VARCHAR(50) NOT NULL,
+    PRIMARY KEY (numCarteirinha)
+);
+
+CREATE TABLE funcionario (
+    idFuncionario NUMERIC NOT NULL,
+    nomeFuncionario VARCHAR(50) NOT NULL, 
+    funcUBS VARCHAR(50) NOT NULL, 
+    contatoFuncionario NUMERIC(9) NOT NULL,
+    nivelAcesso VARCHAR(50) NOT NULL,
+    PRIMARY KEY (idFuncionario)
+);
+
+CREATE TABLE paciente (
+    idPaciente NUMERIC NOT NULL,
+    numCarteirinhaPFK NUMERIC(13) NOT NULL,
+    nomePaciente VARCHAR(50) NOT NULL,
+    contatoPaciente NUMERIC(9) NOT NULL,
+    PRIMARY KEY (idPaciente, numCarteirinhaPFK),
+    FOREIGN KEY (numCarteirinhaPFK) REFERENCES carteirinha (numCarteirinha)
+);
+
+CREATE TABLE item (
+    idItem NUMERIC NOT NULL,
+    nomeItem VARCHAR(50) NOT NULL,
+    descProduto VARCHAR(100),
+    categoria VARCHAR(50) NOT NULL, 
+    qtdeDisponivelItem NUMERIC NOT NULL,
+    qtdeTotallItem NUMERIC NOT NULL,
+    dataAquisicao DATE NOT NULL,
+    unidDeMedida VARCHAR(50) NOT NULL, 
+    fornecedorItem VARCHAR(50) NOT NULL, 
+    condItem VARCHAR(50) NOT NULL, 
+    validade DATE NOT NULL,
+    locEstoque VARCHAR(50) NOT NULL,
+    PRIMARY KEY (idItem)
+);
+
+CREATE TABLE emprestimo (
+    idItemEmprestPFK NUMERIC NOT NULL,
+    idEmprestimo NUMERIC NOT NULL,
+    dataEmprest DATE NOT NULL,
+    dataPrevDev DATE NOT NULL,
+    dataDevol DATE NOT NULL,
+    responsavEmprest VARCHAR(50) NOT NULL, 
+    nomeProduto VARCHAR(50) NOT NULL, 
+    status VARCHAR(50) NOT NULL,
+    PRIMARY KEY (idItemEmprestPFK, idEmprestimo),
+    FOREIGN KEY (idItemEmprestPFK) REFERENCES item (idItem),
+    FOREIGN KEY (idEmprestimo) REFERENCES paciente (idPaciente)
+);
+
+CREATE TABLE histMovimentacao (
+    idMovimentacao VARCHAR(50) NOT NULL, 
+    idItemMovimentPFK NUMERIC NOT NULL,
+    idFuncionarioPFK NUMERIC NOT NULL,
+    tipoMovimentacao VARCHAR(50) NOT NULL,
+    dataMovimentacao DATE NOT NULL,
+    qtdeMovimentada NUMERIC(60) NOT NULL, 
+    PRIMARY KEY (idMovimentacao, idItemMovimentPFK, idFuncionarioPFK),
+    FOREIGN KEY (idItemMovimentPFK) REFERENCES item (idItem),
+    FOREIGN KEY (idFuncionarioPFK) REFERENCES funcionario (idFuncionario)
+);
+
+
+ALTER TABLE paciente ADD CONSTRAINT carteirinha_paciente_fk
+FOREIGN KEY (numCarteirinhaPFK)
+REFERENCES carteirinha (numCarteirinha)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE histMovimentacao ADD CONSTRAINT funcionario_histmovimentacao_fk
+FOREIGN KEY (idFuncionarioPFK)
+REFERENCES funcionario (idFuncionario)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE histMovimentacao ADD CONSTRAINT item_histmovimentacao_fk
+FOREIGN KEY (idItemMovimentPFK)
+REFERENCES item (idItem)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+ALTER TABLE emprestimo ADD CONSTRAINT item_emprestimo_fk
+FOREIGN KEY (idItemEmprestPFK)
+REFERENCES item (idItem)
+ON DELETE NO ACTION
+ON UPDATE NO ACTION;
+
+
+
+ 
