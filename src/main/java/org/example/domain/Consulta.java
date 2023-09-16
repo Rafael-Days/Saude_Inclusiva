@@ -54,7 +54,7 @@ public class Consulta implements Consultador{
 
     @Override
     public void imprimirDetalhes() {
-        System.out.println("DETALHES DA CONSULTA:");
+        System.out.println("---DETALHES DA CONSULTA:---");
         System.out.println("Nome do Paciente: " + paciente.getNome());
         System.out.println("Equipamento Requerido da Consulta: " + equipamentos);
         System.out.println("");
