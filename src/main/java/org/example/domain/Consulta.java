@@ -3,13 +3,12 @@ package org.example.domain;
 import org.example.domain.enums.Equipamentos;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 public class Consulta implements Consultador{
 
     private LocalDate dataConsulta;
 
-    private Double idConsulta;
+    private Integer idConsulta;
 
     private Medico medico;
 
@@ -17,7 +16,7 @@ public class Consulta implements Consultador{
 
     private Equipamentos equipamentos;
 
-    public Consulta(LocalDate dataConsulta, Double idConsulta, Medico medico, Paciente paciente, Equipamentos equipamentos) {
+    public Consulta(LocalDate dataConsulta, Integer idConsulta, Medico medico, Paciente paciente, Equipamentos equipamentos) {
         this.dataConsulta = dataConsulta;
         this.idConsulta = idConsulta;
         this.medico = medico;
@@ -29,7 +28,7 @@ public class Consulta implements Consultador{
         return dataConsulta;
     }
 
-    public Double getIdConsulta() {
+    public Integer getIdConsulta() {
         return idConsulta;
     }
 
@@ -47,16 +46,11 @@ public class Consulta implements Consultador{
 
     public Equipamentos getEquipamentos(){ return equipamentos; }
 
-    @Override
-    public void agendarConsulta() {
-
-    }
 
     @Override
     public void imprimirDetalhes() {
         System.out.println("---DETALHES DA CONSULTA:---");
-        System.out.println("Nome do Paciente: " + paciente.getNome());
-        System.out.println("Equipamento Requerido da Consulta: " + equipamentos);
+        System.out.println("Nome do Paciente: " + paciente.getCadastro().getNome());
         System.out.println("");
         System.out.println("Nome do Médico: " + medico.getNome());
         System.out.println("Especialização do Médico: " + medico.getEspecializacao());
@@ -67,11 +61,13 @@ public class Consulta implements Consultador{
     @Override
     public void definirMedico() {
         switch (equipamentos){
-            case MULETA, ANDADOR, PROTESE, ORTESE, CADEIRA_DE_RODAS -> medico.setEspecializacao(Medico.Especializacao.ORTOPEDISTA);
+            case MULETA, ANDADOR, PROTESE, ORTESE, CADEIRA_DE_RODAS : medico.setEspecializacao(Medico.Especializacao.ORTOPEDISTA);
 
-            case APARELHO_AUDITIVO -> medico.setEspecializacao(Medico.Especializacao.OTORRINOLARINGOLOGISTA);
+            case APARELHO_AUDITIVO : medico.setEspecializacao(Medico.Especializacao.OTORRINOLARINGOLOGISTA);
 
-            case CADEIRA_HIGIENICA -> medico.setEspecializacao(Medico.Especializacao.UROLOGISTA);
+            case CADEIRA_HIGIENICA : medico.setEspecializacao(Medico.Especializacao.UROLOGISTA);
+
+            case NENHUM : medico.setEspecializacao(Medico.Especializacao.GERAL);
         }
     }
 }
