@@ -10,8 +10,6 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
 
-                                // FALTA DEDINIR OS CAMINHOS DE ESCOLHA ->>> TELA
-
         //--------FAZER CADASTRO
         Cadastro cadastroVazio = new Cadastro();
         //cadastroVazio.cadastrarPaciente();
