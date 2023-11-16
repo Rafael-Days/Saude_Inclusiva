@@ -49,7 +49,7 @@ public class Main {
         ConsultaEquipamento consultaEquipamento = new ConsultaEquipamento(LocalDate.of
                 (2023, 12, 12), 555500, medico2, paciente1, Equipamentos.ANDADOR);
 
-        consultaEquipamento.definirMedico();
-        consultaEquipamento.imprimirDetalhes();
+        //consultaEquipamento.definirMedico();
+        //consultaEquipamento.imprimirDetalhes();
     }
 }
